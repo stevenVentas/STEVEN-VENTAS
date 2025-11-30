@@ -85,13 +85,20 @@
 <div class="cards" id="cardsArea">
   <div class="card"><h3>Video Tutorial</h3><button class="btn small-btn" data-type="video" data-src="video/videotutorial.mp4">Ver</button></div>
   <div class="card"><h3>VPN</h3><button class="btn small-btn" data-type="image" data-src="foto vpn/vpnfoto.jpeg">Ver</button></div>
-  <div class="card"><h3>¿Qué es GPT‑5.1?</h3><button class="btn small-btn" data-type="text" data-src="Chat GPT-5.1 es una actualización de la generación GPT-5 que perfecciona dos ejes principales de la experiencia del usuario: estilo de comunicación (haciendo que las respuestas sean más naturales, cálidas y fáciles de personalizar) y razonamiento adaptativo (Dejando que el sistema decida —o que tú elijas— cuánto «pensamiento» aplicar a cada pregunta). OpenAI presenta esta versión como una actualización de calidad y usabilidad, más que como un gran avance en la investigación: la etiqueta 5.1 indica mejoras iterativas en la arquitectura GPT-5.
+  <div class="card"><h3>¿Qué es GPT‑5.1?</h3><button class="small-btn btn" data-type="text" data-src="GPT-5.1 es una actualización de la generación GPT-5 que perfecciona dos ejes principales de la experiencia del usuario: estilo de comunicación (haciendo que las respuestas sean más naturales, cálidas y fáciles de personalizar) y razonamiento adaptativo (Dejando que el sistema decida —o que tú elijas— cuánto «pensamiento» aplicar a cada pregunta). OpenAI presenta esta versión como una actualización de calidad y usabilidad, más que como un gran avance en la investigación: la etiqueta 5.1 indica mejoras iterativas en la arquitectura GPT-5.
 
 OpenAI lanzó la serie GPT-5.1 como una actualización de la familia GPT-5. El anuncio público describe dos variantes con nombre:
 
 GPT-5.1 Instant — un modelo predeterminado más cálido y conversacional que incluye razonamiento adaptativo ligero (decide cuándo “pensar” antes de responder) y mejora en el seguimiento de las instrucciones.
-Pensamiento GPT-5.1 — la versión de razonamiento superior que adapta el tiempo de pensamiento con mayor precisión En función de la complejidad de cada solicitud, ofrece respuestas más profundas y claras en las tareas difíciles, a la vez que responde con mayor rapidez en las más sencillas.
-OpenAI también mantiene un Automática enrutador — GPT-5.1 Auto — que selecciona la mejor variante para una consulta determinada, de modo que los usuarios finales normalmente no tienen que elegir modelos manualmente. ...">Ver</button></div>
+Pensamiento GPT-5.1 — la versión de razonamiento superior que adapta el tiempo de pensamiento con mayor precisión en función de la complejidad de cada solicitud, ofrece respuestas más profundas y claras en las tareas difíciles, a la vez que responde con mayor rapidez en las más sencillas.
+OpenAI también mantiene un enrutador automático — GPT-5.1 Auto — que selecciona la mejor variante para una consulta determinada, de modo que los usuarios finales normalmente no tienen que elegir modelos manualmente.
+
+GPT 5.1 se convertirá en la versión predeterminada para todos los usuarios en los próximos días; también se espera que GPT 5.1 Pro se lance pronto. GPT-5 se irá descontinuando durante los próximos tres meses, pero aún se puede usar temporalmente en la opción “Modelos heredados”. GPT-5 Pro se actualizará próximamente a GPT-5.1 Pro.
+
+Actualizaciones de API:
+
+gpt-5.1-chat-latest → GPT-5.1 Instant
+gpt-5.1 → GPT-5.1 Pensamiento">Ver</button></div>
 </div>
 
 <!-- VIEWER -->
@@ -104,7 +111,7 @@ OpenAI también mantiene un Automática enrutador — GPT-5.1 Auto — que selec
 <div id="modalEnviarWhatsApp" class="modal"><div class="modal-content"><span class="close" id="closeModalEnviar">X</span>
   <h3>Antes de continuar</h3>
   <p>Envía exactamente este mensaje:</p>
-  <div style="background:#001122;padding:10px;border-radius:8px;margin:10px 0;color:#cfeefc;"><code id="modalMensaje">Hola Steven, necesito el método de pago para comprar el método CHAT GPT 5.1 Premium x1 año.</code></div>
+  <div style="background:#001122;padding:10px;border-radius:8px;margin:10px 0;color:#cfeefc;"><code id="modalMensaje">Hola Steven, necesito el método de pago...</code></div>
   <button class="btn" id="continuarWhats">Continuar</button>
   <button class="btn" id="cancelarWhats">Cancelar</button>
 </div></div>
@@ -140,7 +147,20 @@ btnLogin.onclick = ()=>{
 function openViewer(type,src){
   viewerBody.innerHTML='';
   if(type==='video'){
-    viewerBody.innerHTML = `<video src="${src}" controls style="width:100%;max-height:80vh;"></video>`;
+    // crear elemento video de forma segura y bloquear descarga
+      viewerBody.innerHTML = '';
+      const videoEl = document.createElement('video');
+      videoEl.src = src;
+      videoEl.controls = true;
+      videoEl.setAttribute('style','width:100%;max-height:80vh;');
+      // impedir botón de descargar y picture-in-picture
+      videoEl.setAttribute('controlsList','nodownload');
+      videoEl.disablePictureInPicture = true;
+      videoEl.setAttribute('playsinline','');
+      videoEl.setAttribute('draggable','false');
+      // bloquear menú contextual sobre el video
+      videoEl.addEventListener('contextmenu', e => e.preventDefault());
+      viewerBody.appendChild(videoEl);
   } else if(type==='image'){
     viewerBody.innerHTML = `<img src="${src}" style="width:100%;max-height:80vh;">`;
   } else {
@@ -185,11 +205,11 @@ whatsappButtons.forEach(b=>{
     const type=b.dataset.type;
     const url=b.dataset.url;
     if(type==='comprar'){
-      modalMensaje.textContent='Hola Steven, necesito el método de pago para comprar el método CHAT GPT 5.1 Premium x1 año.';
+      modalMensaje.textContent='Hola Steven, necesito el método de pago para comprar el método de CHAT GPT 5.1 Premium x1 año.';
       pendingUrl=url;
       modalEnviar.style.display='flex';
     } else if(type==='wa'){
-      const ayuda='Hola Steven, necesito ayuda con el metodo se lo compre a: (escribe su nombre y manda captura, asi haiga sido yo)...';
+      const ayuda='hola Steven, necesito ayuda...';
       window.open(url+'?text='+encodeURIComponent(ayuda),'_blank');
     } else {
       window.open(url,'_blank');
